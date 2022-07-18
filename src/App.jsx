@@ -127,13 +127,24 @@ function App() {
 						'administrators',
 					]) && <NavLink to="/job-sources">Job Sources</NavLink>}
 
-					<NavLink to="/job-applications">Job Applications</NavLink>
-					<NavLink to="/cv">CV</NavLink>
+					{currentUserIsInAccessGroups([
+						'administrators',
+					]) &&
+						<NavLink to="/job-applications">Job Applications</NavLink>
+					}
+					
+					{currentUserIsInAccessGroups([
+						'companies',
+						'administrators',
+					]) &&
+						<NavLink to="/cv">CV</NavLink>}
+
 					<NavLink to="/login">Login</NavLink>
 					<NavLink to="/register">Register</NavLink>
 				</nav>
 				<Routes>
 					<Route path="/welcome" element={<PageWelcome />} />
+
 					{currentUserIsInAccessGroups([
 						'jobSeekers',
 						'administrators',
@@ -146,11 +157,21 @@ function App() {
 								/>
 							}
 						/>}
-					<Route
-						path="/job-applications"
-						element={<PageJobApplications />}
-					/>
-					<Route path="/cv" element={<PageCv />} />
+					k
+					{currentUserIsInAccessGroups([
+						'administrators',
+					]) &&
+						<Route
+							path="/job-applications"
+							element={<PageJobApplications />}
+						/>}
+
+					{currentUserIsInAccessGroups([
+						'companies',
+						'administrators',
+					]) &&
+						<Route path="/cv" element={<PageCv />} />}
+
 					<Route
 						path="/login"
 						element={
