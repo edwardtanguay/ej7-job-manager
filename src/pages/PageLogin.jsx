@@ -1,4 +1,4 @@
-export const PageLogin = ({message, jobSources, userIsLoggedIn, currentUser, currentUserIsInAccessGroup, handleLogoutButton, handleLoginButton, username, password, setUsername, setPassword}) => {
+export const PageLogin = ({message, jobSources, userIsLoggedIn, currentUser, currentUserIsInAccessGroups, handleLogoutButton, handleLoginButton, username, password, setUsername, setPassword}) => {
 	return (
 		<>
 			<p>This is the Login page.</p>

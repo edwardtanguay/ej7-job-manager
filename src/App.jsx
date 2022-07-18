@@ -13,7 +13,10 @@ const backend_base_url = 'http://localhost:3045';
 
 function App() {
 	const [jobSources, setJobSources] = useState([]);
-	const [currentUser, setCurrentUser] = useState({});
+	const [currentUser, setCurrentUser] = useState({
+		username: 'anonymousUser',
+		accessGroups: ['loggedOutUsers'],
+	});
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [message, setMessage] = useState('');
@@ -22,12 +25,14 @@ function App() {
 		return currentUser.username !== 'anonymousUser';
 	};
 
-	const currentUserIsInAccessGroup = (accessGroup) => {
-		if (currentUser.accessGroups) {
-			return currentUser.accessGroups.includes(accessGroup);
-		} else {
-			return false;
-		}
+	const currentUserIsInAccessGroups = (accessGroups) => {
+		let rb = false;
+		accessGroups.forEach((accessGroup) => {
+			if (currentUser.accessGroups.includes(accessGroup)) {
+				rb = true;
+			}
+		});
+		return rb;
 	};
 
 	const getJobSources = () => {
@@ -40,6 +45,7 @@ function App() {
 
 	useEffect(() => {
 		(async () => {
+			console.log('111');
 			const response = await fetch(backend_base_url + '/maintain-login', {
 				method: 'POST',
 				headers: {
@@ -47,6 +53,7 @@ function App() {
 					authorization: 'Bearer ' + localStorage.getItem('token'),
 				},
 			});
+			console.log(response);
 			if (response.ok) {
 				const data = await response.json();
 				setCurrentUser(data.user);
@@ -60,6 +67,7 @@ function App() {
 						password: 'anonymousUser123',
 					}),
 				});
+				console.log(response);
 				if (response.ok) {
 					const data = await response.json();
 					getJobSources();
@@ -93,7 +101,10 @@ function App() {
 
 	const handleLogoutButton = () => {
 		localStorage.removeItem('token');
-		setCurrentUser({ username: 'anonymousUser' });
+		setCurrentUser({
+			username: 'anonymousUser',
+			accessGroups: ['loggedOutUsers'],
+		});
 	};
 
 	return (
@@ -110,7 +121,12 @@ function App() {
 				)}
 				<nav>
 					<NavLink to="/welcome">Welcome</NavLink>
-					<NavLink to="/job-sources">Job Sources</NavLink>
+
+					{currentUserIsInAccessGroups([
+						'jobSeekers',
+						'administrators',
+					]) && <NavLink to="/job-sources">Job Sources</NavLink>}
+
 					<NavLink to="/job-applications">Job Applications</NavLink>
 					<NavLink to="/cv">CV</NavLink>
 					<NavLink to="/login">Login</NavLink>
@@ -118,15 +134,18 @@ function App() {
 				</nav>
 				<Routes>
 					<Route path="/welcome" element={<PageWelcome />} />
-					<Route
-						path="/job-sources"
-						element={
-							<PageJobSources
-								jobSources={jobSources}
-								handleLogoutButton={handleLogoutButton}
-							/>
-						}
-					/>
+					{currentUserIsInAccessGroups([
+						'jobSeekers',
+						'administrators',
+					]) && <Route
+							path="/job-sources"
+							element={
+								<PageJobSources
+									jobSources={jobSources}
+									handleLogoutButton={handleLogoutButton}
+								/>
+							}
+						/>}
 					<Route
 						path="/job-applications"
 						element={<PageJobApplications />}
@@ -140,8 +159,8 @@ function App() {
 								jobSources={jobSources}
 								userIsLoggedIn={userIsLoggedIn}
 								currentUser={currentUser}
-								currentUserIsInAccessGroup={
-									currentUserIsInAccessGroup
+								currentUserIsInAccessGroups={
+									currentUserIsInAccessGroups
 								}
 								handleLogoutButton={handleLogoutButton}
 								handleLoginButton={handleLoginButton}
