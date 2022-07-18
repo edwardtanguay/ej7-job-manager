@@ -96,6 +96,9 @@ function App() {
 			localStorage.setItem('token', data.token);
 		} else {
 			setMessage('bad login');
+			setTimeout(() => {
+				setMessage('');
+			}, 3000);
 		}
 	};
 
@@ -119,6 +122,7 @@ function App() {
 						</button>
 					</div>
 				)}
+				{message !== '' && <div className="siteMessage">{message}</div>}
 				<nav>
 					<NavLink to="/welcome">Welcome</NavLink>
 
@@ -127,28 +131,31 @@ function App() {
 						'administrators',
 					]) && <NavLink to="/job-sources">Job Sources</NavLink>}
 
-					{currentUserIsInAccessGroups([
-						'administrators',
-					]) &&
-						<NavLink to="/job-applications">Job Applications</NavLink>
-					}
-					
+					{currentUserIsInAccessGroups(['administrators']) && (
+						<NavLink to="/job-applications">
+							Job Applications
+						</NavLink>
+					)}
+
 					{currentUserIsInAccessGroups([
 						'companies',
 						'administrators',
-					]) &&
-						<NavLink to="/cv">CV</NavLink>}
+					]) && <NavLink to="/cv">CV</NavLink>}
 
-					<NavLink to="/login">Login</NavLink>
-					<NavLink to="/register">Register</NavLink>
+					{currentUserIsInAccessGroups(['loggedOutUsers']) && (
+						<>
+							<NavLink to="/login">Login</NavLink>
+							<NavLink to="/register">Register</NavLink>
+						</>
+					)}
 				</nav>
 				<Routes>
 					<Route path="/welcome" element={<PageWelcome />} />
-
 					{currentUserIsInAccessGroups([
 						'jobSeekers',
 						'administrators',
-					]) && <Route
+					]) && (
+						<Route
 							path="/job-sources"
 							element={
 								<PageJobSources
@@ -156,22 +163,19 @@ function App() {
 									handleLogoutButton={handleLogoutButton}
 								/>
 							}
-						/>}
+						/>
+					)}
 					k
-					{currentUserIsInAccessGroups([
-						'administrators',
-					]) &&
+					{currentUserIsInAccessGroups(['administrators']) && (
 						<Route
 							path="/job-applications"
 							element={<PageJobApplications />}
-						/>}
-
+						/>
+					)}
 					{currentUserIsInAccessGroups([
 						'companies',
 						'administrators',
-					]) &&
-						<Route path="/cv" element={<PageCv />} />}
-
+					]) && <Route path="/cv" element={<PageCv />} />}
 					<Route
 						path="/login"
 						element={
