@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import './App.scss';
 import axios from 'axios';
+import { PageWelcome } from './pages/PageWelcome';
+import { PageJobSources } from './pages/PageJobSources';
+import { PageJobApplications } from './pages/PageJobApplications';
+import { PageCv } from './pages/PageCv';
+import { PageLogin } from './pages/PageLogin';
+import { PageRegister } from './pages/PageRegister';
+import { NavLink, Route, Routes } from 'react-router-dom';
+
 
 const backend_base_url = 'http://localhost:3045';
 
@@ -13,7 +21,6 @@ function App() {
 
 	const userIsLoggedIn = () => {
 		return currentUser.username !== 'anonymousUser';
-		// return Object.keys(currentUser).length > 0;
 	};
 
 	const currentUserIsInAccessGroup = (accessGroup) => {
@@ -87,16 +94,33 @@ function App() {
 
 	const handleLogoutButton = () => {
 		localStorage.removeItem('token');
-		setCurrentUser({username: 'anonymousUser'});
+		setCurrentUser({ username: 'anonymousUser' });
 	};
 
 	return (
 		<div className="App">
 			<>
 				<h1>EJ2 Job Manager</h1>
-				<hr/>
-				{currentUser.username}
-				<hr/>
+				<nav>
+					<NavLink to="/welcome">Welcome</NavLink>
+					<NavLink to="/job-sources">Job Sources</NavLink>
+					<NavLink to="/job-applications">Job Applications</NavLink>
+					<NavLink to="/cv">CV</NavLink>
+					<NavLink to="/login">Login</NavLink>
+					<NavLink to="/register">Register</NavLink>
+				</nav>
+				<Routes>
+					<Route path="/welcome" element={<PageWelcome />} />
+					<Route path="/job-sources" element={<PageJobSources />} />
+					<Route
+						path="/job-applications"
+						element={<PageJobApplications />}
+					/>
+					<Route path="/cv" element={<PageCv />} />
+					<Route path="/login" element={<PageLogin />} />
+					<Route path="/register" element={<PageRegister />} />
+				</Routes>
+
 				<div className="loggedInInfo">
 					{userIsLoggedIn() && (
 						<div>
