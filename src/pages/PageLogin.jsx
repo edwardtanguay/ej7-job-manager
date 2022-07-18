@@ -2,35 +2,7 @@ export const PageLogin = ({message, jobSources, userIsLoggedIn, currentUser, cur
 	return (
 		<>
 			<p>This is the Login page.</p>
-			<div className="loggedInInfo">
-				{userIsLoggedIn() && (
-					<div>
-						Logged in: {currentUser.firstName}{' '}
-						{currentUser.lastName}
-					</div>
-				)}
-			</div>
-			<div className="info">
-				{currentUserIsInAccessGroup('administrators') && (
-					<div>info for administrators</div>
-				)}
-				{currentUserIsInAccessGroup('jobSeekers') && (
-					<div>new job information for job seekers</div>
-				)}
-			</div>
-			{userIsLoggedIn() ? (
-				<>
-					<p>There are {jobSources.length} job sources:</p>
-					<ul>
-						{jobSources.map((jobSource, i) => {
-							return <li key={i}>{jobSource.name}</li>;
-						})}
-					</ul>
-					<button className="logout" onClick={handleLogoutButton}>
-						Logout
-					</button>
-				</>
-			) : (
+			{!userIsLoggedIn() && (
 				<form className="login" onSubmit={handleLoginButton}>
 					<div className="row">
 						username:{' '}

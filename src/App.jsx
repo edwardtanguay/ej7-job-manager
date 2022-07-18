@@ -9,7 +9,6 @@ import { PageLogin } from './pages/PageLogin';
 import { PageRegister } from './pages/PageRegister';
 import { NavLink, Route, Routes } from 'react-router-dom';
 
-
 const backend_base_url = 'http://localhost:3045';
 
 function App() {
@@ -101,6 +100,14 @@ function App() {
 		<div className="App">
 			<>
 				<h1>EJ2 Job Manager</h1>
+				{userIsLoggedIn() && (
+					<div className="loggedInInfo">
+						{currentUser.firstName} {currentUser.lastName}{' '}
+						<button className="logout" onClick={handleLogoutButton}>
+							Logout
+						</button>
+					</div>
+				)}
 				<nav>
 					<NavLink to="/welcome">Welcome</NavLink>
 					<NavLink to="/job-sources">Job Sources</NavLink>
@@ -111,16 +118,42 @@ function App() {
 				</nav>
 				<Routes>
 					<Route path="/welcome" element={<PageWelcome />} />
-					<Route path="/job-sources" element={<PageJobSources />} />
+					<Route
+						path="/job-sources"
+						element={
+							<PageJobSources
+								jobSources={jobSources}
+								handleLogoutButton={handleLogoutButton}
+							/>
+						}
+					/>
 					<Route
 						path="/job-applications"
 						element={<PageJobApplications />}
 					/>
 					<Route path="/cv" element={<PageCv />} />
-					<Route path="/login" element={<PageLogin message={message} jobSources={jobSources} userIsLoggedIn={userIsLoggedIn} currentUser={currentUser} currentUserIsInAccessGroup={currentUserIsInAccessGroup} handleLogoutButton={handleLogoutButton} handleLoginButton={handleLoginButton} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />} />
+					<Route
+						path="/login"
+						element={
+							<PageLogin
+								message={message}
+								jobSources={jobSources}
+								userIsLoggedIn={userIsLoggedIn}
+								currentUser={currentUser}
+								currentUserIsInAccessGroup={
+									currentUserIsInAccessGroup
+								}
+								handleLogoutButton={handleLogoutButton}
+								handleLoginButton={handleLoginButton}
+								username={username}
+								password={password}
+								setUsername={setUsername}
+								setPassword={setPassword}
+							/>
+						}
+					/>
 					<Route path="/register" element={<PageRegister />} />
 				</Routes>
-
 			</>
 		</div>
 	);
